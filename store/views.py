@@ -9,6 +9,7 @@ from django.core.validators import validate_email
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import make_aware
 from django.core.mail import send_mail
+from django.utils.text import slugify
 from django.contrib import messages
 from django.core import serializers
 from django.utils import timezone
@@ -90,7 +91,9 @@ def home(request):
     return render(request, 'store/home.html', {
         'user_id': request.session.get('user_id'),
         'user_role': request.session.get('user_role'),
-        'user_name': Registration.objects.get(id=request.session['user_id']).username if request.session.get('user_id') else ''
+        'user_name': Registration.objects.get(id=request.session['user_id']).username if request.session.get('user_id') else '',
+        # Only active categories
+        'categories': Category.objects.filter(is_active=True).order_by('name')
     })
 
 
@@ -143,14 +146,51 @@ def cart(request):
 def checkout(request):
     return render(request, 'store/checkout.html')
 
+
 def admindashboard(request):
     return render(request, 'biguser/dashboard.html')
 
+
 def viewcategories(request):
-    return render(request, 'biguser/addcategories.html')
+    categories = Category.objects.all().order_by('-created_at')  # latest first
+    return render(request, 'biguser/viewcategories.html', {'categories': categories})
+
 
 def addcategories(request):
-    return render(request, 'biguser/addcategories.html')
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        slug = request.POST.get('slug')
+        description = request.POST.get('description')
+        image = request.FILES.get('image')
+        parent_id = request.POST.get('parent')
+        is_active = request.POST.get('is_active') == 'on'
+
+        # Slug fallback to slugify(name) if not provided
+        if not slug:
+            slug = slugify(name)
+
+        parent = None
+        if parent_id:
+            try:
+                parent = Category.objects.get(id=parent_id)
+            except Category.DoesNotExist:
+                parent = None  # In case the selected parent is invalid
+
+        # Create and save the new category
+        Category.objects.create(
+            name=name,
+            slug=slug,
+            description=description,
+            image=image,
+            parent=parent,
+            is_active=is_active
+        )
+
+        return redirect('viewcategories')  # or wherever you want to redirect
+
+    # On GET request: render form with list of categories for dropdown
+    categories = Category.objects.all()
+    return render(request, 'biguser/addcategories.html', {'categories': categories})
 
 # E-commerce Frontend page with Email send function in signup.
 # @csrf_exempt

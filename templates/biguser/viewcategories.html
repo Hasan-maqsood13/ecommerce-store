@@ -1,0 +1,76 @@
+{% extends 'biguser/base.html' %}
+{% load static %}
+
+{% block title %} Admin Dashboard | E-commerce Store {% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+            <div class="row">
+                
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Slug</th>
+                                <th>Description</th>
+                                <th>Parent Category</th>
+                                <th>Image</th>
+                                <th>Is Active</th>
+                                <th>Created At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category in categories %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ category.name }}</td>
+                                <td>{{ category.slug }}</td>
+                                <td>{{ category.description|default:"-" }}</td>
+                                <td>
+                                    {% if category.parent %}
+                                    {{ category.parent.name }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if category.image %}
+                                    <img src="{{ category.image.url }}" alt="Image" width="60" height="60">
+                                    {% else %}
+                                    No Image
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if category.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ category.created_at|date:"Y-m-d H:i" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center">No categories found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-auto layout-rightside-col">
+                    <div class="overlay"></div>
+                    <h2>hello</h2>
+                </div>
+                <!-- end col -->
+            </div>
+        </div>
+        <!-- container-fluid -->
+    </div>
+</div>
+{% endblock %}
