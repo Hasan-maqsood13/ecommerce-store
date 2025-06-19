@@ -21,9 +21,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('django-admin/', admin.site.urls),
+    path('defaultadmindjangopage/', admin.site.urls),
     path('', views.home, name='home'),
-
+    path('admindashboard/', views.admindashboard, name="admindashboard"),
     # path('verification/', views.email_verification, name="verification"),
     # path('verify-code/', views.verify_code, name="verify_code"),
     path('logout/', views.logout, name="logout"),
@@ -35,6 +35,8 @@ urlpatterns = [
     path('wishlist/', views.wishlist, name="wishlist"),
     path('cart/', views.cart, name="cart"),
     path('checkout/', views.checkout, name="checkout"),
+    path('addcategories/', views.addcategories, name="addcategories"),
+    path('viewcategories/', views.viewcategories, name="viewcategories"),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

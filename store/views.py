@@ -60,7 +60,7 @@ def home(request):
             request.session['user_name'] = user.username
 
             if user.role == 'admin':
-                redirect_url = '/admindashboard/'
+                redirect_url = 'admindashboard/'
             else:
                 redirect_url = ''
 
@@ -142,6 +142,15 @@ def cart(request):
 
 def checkout(request):
     return render(request, 'store/checkout.html')
+
+def admindashboard(request):
+    return render(request, 'biguser/dashboard.html')
+
+def viewcategories(request):
+    return render(request, 'biguser/addcategories.html')
+
+def addcategories(request):
+    return render(request, 'biguser/addcategories.html')
 
 # E-commerce Frontend page with Email send function in signup.
 # @csrf_exempt
