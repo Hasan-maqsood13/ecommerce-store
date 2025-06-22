@@ -29,6 +29,7 @@ urlpatterns = [
     path('logout/', views.logout, name="logout"),
     path('account/', views.account, name="account"),
     path('shop/', views.shop, name="shop"),
+    path('shop/category/<str:category_name>/', views.shop_by_category, name='shop_by_category'),
     path('aboutus/', views.about, name="about"),
     path('contactus/', views.contact, name="contact"),
     path('blog/', views.blog, name="blog"),

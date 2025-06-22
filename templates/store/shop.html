@@ -231,6 +231,9 @@
       <div class="page-header text-center" style="background-image: url('store/assets/images/page-header-bg.jpg')">
         <div class="container">
           <h1 class="page-title">E-commerce Store<span>All Products are Listed Here!</span></h1>
+          {% if selected_category %}
+          <h2 class="text-center mb-3">Showing Products for Category: "{{ selected_category }}"</h2>
+          {% endif %}
         </div>
         <!-- End .container -->
       </div>
@@ -258,16 +261,17 @@
                 <nav class="side-nav">
                   <ul class="menu-vertical sf-arrows">
                     {% for category in categories %}
-                    <li><a href="#">{{ category.name }}</a></li>
+                    <li>
+                      <a href="{% url 'shop_by_category' category.name|urlencode %}">
+                        {{ category.name }}
+                      </a>
+                    </li>
                     {% empty %}
                     <li><a href="#">No categories available</a></li>
                     {% endfor %}
                   </ul>
-                  <!-- End .menu-vertical -->
                 </nav>
-                <!-- End .side-nav -->
               </div>
-              <!-- End .dropdown-menu -->
             </div>
             <!-- End .toolbox-left -->
 

@@ -255,21 +255,21 @@
                                 title="Browse Categories">
                                 Browse Categories
                             </a>
-
                             <div class="dropdown-menu">
                                 <nav class="side-nav">
                                     <ul class="menu-vertical sf-arrows">
                                         {% for category in categories %}
-                                        <li><a href="#">{{ category.name }}</a></li>
+                                        <li>
+                                            <a href="{% url 'shop_by_category' category.name|urlencode %}">
+                                                {{ category.name }}
+                                            </a>
+                                        </li>
                                         {% empty %}
                                         <li><a href="#">No categories available</a></li>
                                         {% endfor %}
                                     </ul>
-                                    <!-- End .menu-vertical -->
                                 </nav>
-                                <!-- End .side-nav -->
                             </div>
-                            <!-- End .dropdown-menu -->
                         </div>
                         <!-- End .category-dropdown -->
                     </div>

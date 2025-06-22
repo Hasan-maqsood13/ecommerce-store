@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import make_aware
+from urllib.parse import unquote
 from django.core.mail import send_mail
 from django.utils.text import slugify
 from django.contrib import messages
@@ -156,6 +157,17 @@ def shop(request):
         'products': products,
     })
 
+def shop_by_category(request, category_name):
+    decoded_category_name = unquote(category_name)
+    
+    categories = Category.objects.all()
+    products = Product.objects.filter(category__name=decoded_category_name)
+
+    return render(request, 'store/shop.html', {
+        'categories': categories,
+        'products': products,
+        'selected_category': decoded_category_name,
+    })
 
 def about(request):
     return render(request, 'store/about.html')
