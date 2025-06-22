@@ -52,3 +52,48 @@ class Category(models.Model):
         if self.parent:
             return f"{self.parent.name} > {self.name}"
         return self.name
+
+class Product(models.Model):
+    PRODUCT_TAG_CHOICES = [
+        ('featured', 'Featured'),
+        ('on_sale', 'On Sale'),
+        ('top_rated', 'Top Rated'),
+        ('normal', 'Normal'),
+        ('clearance', 'Clearance'),
+        ('new_arrival', 'New Arrivals'),
+        ('limited', 'Limited Quantities'),
+        ('best_choice', 'The Best Choices'),
+    ]
+
+    name = models.CharField(max_length=255, unique=True)
+    slug = models.SlugField(max_length=255, unique=True, blank=True, null=True)
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name='products',
+        help_text="Select category or subcategory"
+    )
+    description = models.TextField(blank=True, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    stock = models.PositiveIntegerField(default=0)
+    image = models.ImageField(upload_to='product_images/', blank=True, null=True)
+
+    tag = models.CharField(
+        max_length=30,
+        choices=PRODUCT_TAG_CHOICES,
+        default='normal',
+        help_text='Product label for homepage filtering'
+    )
+
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    last_updated = models.DateTimeField(default=timezone.now)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        self.last_updated = timezone.now()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name

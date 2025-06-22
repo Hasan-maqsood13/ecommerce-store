@@ -1,0 +1,91 @@
+{% extends 'biguser/base.html' %}
+{% load static %}
+
+{% block title %} Admin Dashboard | E-commerce Store {% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <div class="h-100">
+                        <h2>Add Product</h2>
+                        <form method="POST" enctype="multipart/form-data" action="{% url 'addproduct' %}">
+                            {% csrf_token %}
+
+                            <div class="form-group">
+                                <label for="name">Product Name</label>
+                                <input type="text" id="name" name="name" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="slug">Slug (optional)</label>
+                                <input type="text" id="slug" name="slug" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <select id="category" name="category" class="form-control" required>
+                                    <option value="">-- Select Category --</option>
+                                    {% for cat in categories %}
+                                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="tag">Product Tag</label>
+                                <select id="tag" name="tag" class="form-control">
+                                    <option value="normal">Normal</option>
+                                    <option value="featured">Featured</option>
+                                    <option value="on_sale">On Sale</option>
+                                    <option value="top_rated">Top Rated</option>
+                                    <option value="clearance">Clearance</option>
+                                    <option value="new_arrivals">New Arrivals</option>
+                                    <option value="limited_quantities">Limited Quantities</option>
+                                    <option value="best_choices">The Best Choices</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea id="description" name="description" rows="4" class="form-control"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="price">Price</label>
+                                <input type="number" id="price" name="price" class="form-control" step="0.01" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="stock">Stock</label>
+                                <input type="number" id="stock" name="stock" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="image">Product Image</label>
+                                <input type="file" id="image" name="image" class="form-control">
+                            </div>
+
+                            <div class="form-group form-check mt-3">
+                                <input type="checkbox" id="is_active" name="is_active" class="form-check-input" checked>
+                                <label class="form-check-label" for="is_active">Is Active</label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary mt-3">Add Product</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-auto layout-rightside-col">
+                    <div class="overlay"></div>
+                    <h2>hello</h2>
+                </div>
+                <!-- end col -->
+            </div>
+        </div>
+        <!-- container-fluid -->
+    </div>
+</div>
+{% endblock %}

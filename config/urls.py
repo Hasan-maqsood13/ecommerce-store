@@ -37,6 +37,8 @@ urlpatterns = [
     path('checkout/', views.checkout, name="checkout"),
     path('addcategories/', views.addcategories, name="addcategories"),
     path('viewcategories/', views.viewcategories, name="viewcategories"),
+    path('addproduct/', views.addproduct, name="addproduct"),
+    path('viewproducts/', views.viewproducts, name="viewproducts"),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

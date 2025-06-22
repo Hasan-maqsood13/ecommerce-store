@@ -88,12 +88,41 @@ def home(request):
                 'success': True,
                 'redirect_url': ''
             })
+    featured_products = Product.objects.filter(is_active=True, tag='featured').order_by('-created_at').distinct()
+    on_sale_products = Product.objects.filter(is_active=True, tag='on_sale').order_by('-created_at').distinct()
+    on_sale_banner_product = on_sale_products.first()
+    top_rated_products = Product.objects.filter(is_active=True, tag='top_rated').order_by('-created_at').distinct()
+    normal_products = Product.objects.filter(is_active=True, tag='normal').order_by('-created_at').distinct()
+    clearance_product = Product.objects.filter(is_active=True, tag='clearance').order_by('-created_at').first()
+    new_arrival_product = Product.objects.filter(is_active=True, tag='new_arrival').order_by('-created_at').first()
+    limited_product = Product.objects.filter(is_active=True, tag='limited').order_by('-created_at').first()
+    best_choice_product = Product.objects.filter(is_active=True, tag='best_choice').order_by('-created_at').first()
+    normal_products = Product.objects.filter(is_active=True, tag='normal').order_by('-created_at').distinct()
+    furniture_category = Category.objects.filter(name__iexact='Furniture').first()
+    furniture_products = Product.objects.filter(category=furniture_category, is_active=True).order_by('-created_at') if furniture_category else Product.objects.none()
+    decor_category = Category.objects.filter(name__iexact='Decor').first()
+    decor_products = Product.objects.filter(category=decor_category, is_active=True).order_by('-created_at') if decor_category else Product.objects.none()
+    lighting_category = Category.objects.filter(name__iexact='Lighting').first()
+    lighting_products = Product.objects.filter(category=lighting_category, is_active=True).order_by('-created_at') if lighting_category else Product.objects.none()
+
+
     return render(request, 'store/home.html', {
+        'featured_products': featured_products,
+        'on_sale_products': on_sale_products,
+        'on_sale_banner_product': on_sale_banner_product,
+        'top_rated_products': top_rated_products,
+        'normal_products': normal_products,
+        'clearance_product': clearance_product,
+        'new_arrival_product': new_arrival_product,
+        'limited_product': limited_product,
+        'best_choice_product': best_choice_product,
+        'furniture_products': furniture_products,
+        'decor_products': decor_products,
+        'lighting_products': lighting_products,
+        'categories': Category.objects.filter(is_active=True).order_by('name'),
         'user_id': request.session.get('user_id'),
         'user_role': request.session.get('user_role'),
-        'user_name': Registration.objects.get(id=request.session['user_id']).username if request.session.get('user_id') else '',
-        # Only active categories
-        'categories': Category.objects.filter(is_active=True).order_by('name')
+        'user_name': request.session.get('user_name', ''),
     })
 
 
@@ -120,7 +149,12 @@ def account(request):
 
 
 def shop(request):
-    return render(request, 'store/shop.html')
+    categories = Category.objects.all()
+    products = Product.objects.all()
+    return render(request, 'store/shop.html', {
+        'categories': categories,
+        'products': products,
+    })
 
 
 def about(request):
@@ -191,6 +225,49 @@ def addcategories(request):
     # On GET request: render form with list of categories for dropdown
     categories = Category.objects.all()
     return render(request, 'biguser/addcategories.html', {'categories': categories})
+
+
+def addproduct(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        slug = request.POST.get('slug')
+        category_id = request.POST.get('category')
+        description = request.POST.get('description')
+        price = request.POST.get('price')
+        stock = request.POST.get('stock')
+        image = request.FILES.get('image')
+        is_active = request.POST.get('is_active') == 'on'
+        tag = request.POST.get('tag', 'normal')
+
+        if not slug:
+            slug = slugify(name)
+
+        try:
+            category = Category.objects.get(id=category_id)
+        except Category.DoesNotExist:
+            category = None
+
+        Product.objects.create(
+            name=name,
+            slug=slug,
+            category=category,
+            description=description,
+            price=price,
+            stock=stock,
+            image=image,
+            is_active=is_active,
+            tag=tag,
+        )
+
+        return redirect('viewproducts')  # or wherever you want to go
+
+    categories = Category.objects.filter(is_active=True)
+    return render(request, 'biguser/addproduct.html', {'categories': categories})
+
+
+def viewproducts(request):
+    products = Product.objects.all().order_by('-created_at')  # newest first
+    return render(request, 'biguser/viewproducts.html', {'products': products})
 
 # E-commerce Frontend page with Email send function in signup.
 # @csrf_exempt
