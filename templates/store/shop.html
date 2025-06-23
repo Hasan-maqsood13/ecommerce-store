@@ -322,11 +322,15 @@
                     </a>
 
                     <div class="product-action-vertical">
-                      <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                      <a href="{% url 'add_to_wishlist' product.id %}" class="btn-product-icon btn-wishlist">
+                        <span>Add to Wishlist</span>
+                      </a>
                     </div>
 
                     <div class="product-action action-icon-top">
-                      <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                      <a href="{% url 'add_to_cart' product.id %}" class="btn-product btn-cart">
+                        <span>add to cart</span>
+                      </a>
                       <a href="popup/quickView.html" class="btn-product btn-quickview" title="Quick view"><span>quick
                           view</span></a>
                       <a href="#" class="btn-product btn-compare" title="Compare"><span>compare</span></a>

@@ -278,7 +278,9 @@
                             </a>
 
                             <div class="product-action-vertical">
-                                <a href="#" class="btn-product-icon btn-wishlist"><span>add to wishlist</span></a>
+                                <a href="{% url 'add_to_wishlist' product.id %}" class="btn-product-icon btn-wishlist">
+                                    <span>Add to Wishlist</span>
+                                </a>
                             </div>
                         </figure>
 
@@ -297,7 +299,9 @@
                         </div>
 
                         <div class="product-action">
-                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                            <a href="{% url 'add_to_cart' product.id %}" class="btn-product btn-cart">
+                                <span>add to cart</span>
+                            </a>
                         </div>
                     </div>
                     {% empty %}
@@ -337,7 +341,9 @@
                             </a>
 
                             <div class="product-action-vertical">
-                                <a href="#" class="btn-product-icon btn-wishlist"><span>add to wishlist</span></a>
+                                <a href="{% url 'add_to_wishlist' product.id %}" class="btn-product-icon btn-wishlist">
+                                    <span>Add to Wishlist</span>
+                                </a>
                             </div>
                         </figure>
 
@@ -350,7 +356,9 @@
                         </div>
 
                         <div class="product-action">
-                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                            <a href="{% url 'add_to_cart' product.id %}" class="btn-product btn-cart">
+                                <span>add to cart</span>
+                            </a>
                         </div>
                     </div>
                     {% empty %}
@@ -390,7 +398,9 @@
                             </a>
 
                             <div class="product-action-vertical">
-                                <a href="#" class="btn-product-icon btn-wishlist"><span>add to wishlist</span></a>
+                                <a href="{% url 'add_to_wishlist' product.id %}" class="btn-product-icon btn-wishlist">
+                                    <span>Add to Wishlist</span>
+                                </a>
                             </div>
                         </figure>
 
@@ -403,7 +413,9 @@
                         </div>
 
                         <div class="product-action">
-                            <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                            <a href="{% url 'add_to_cart' product.id %}" class="btn-product btn-cart">
+                                <span>add to cart</span>
+                            </a>
                         </div>
                     </div>
                     {% empty %}
@@ -551,8 +563,9 @@
                                     </a>
 
                                     <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist">
-                                            <span>add to wishlist</span>
+                                        <a href="{% url 'add_to_wishlist' product.id %}"
+                                            class="btn-product-icon btn-wishlist">
+                                            <span>Add to Wishlist</span>
                                         </a>
                                     </div>
                                 </figure>
@@ -576,7 +589,9 @@
                                 </div>
 
                                 <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    <a href="{% url 'add_to_cart' product.id %}" class="btn-product btn-cart">
+                                        <span>add to cart</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -621,8 +636,10 @@
                                     </a>
 
                                     <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist"><span>add to
-                                                wishlist</span></a>
+                                        <a href="{% url 'add_to_wishlist' product.id %}"
+                                            class="btn-product-icon btn-wishlist">
+                                            <span>Add to Wishlist</span>
+                                        </a>
                                     </div>
                                 </figure>
 
@@ -639,7 +656,9 @@
                                 </div>
 
                                 <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    <a href="{% url 'add_to_cart' product.id %}" class="btn-product btn-cart">
+                                        <span>add to cart</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -668,8 +687,10 @@
                                     </a>
 
                                     <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist"><span>add to
-                                                wishlist</span></a>
+                                        <a href="{% url 'add_to_wishlist' product.id %}"
+                                            class="btn-product-icon btn-wishlist">
+                                            <span>Add to Wishlist</span>
+                                        </a>
                                     </div>
                                 </figure>
 
@@ -684,7 +705,9 @@
                                 </div>
 
                                 <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    <a href="{% url 'add_to_cart' product.id %}" class="btn-product btn-cart">
+                                        <span>add to cart</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -729,7 +752,9 @@
                                 </div>
 
                                 <div class="product-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    <a href="{% url 'add_to_cart' product.id %}" class="btn-product btn-cart">
+                                        <span>add to cart</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -872,3 +897,6 @@
 </main>
 <!-- End .main -->
 {% endblock %}
+
+
+

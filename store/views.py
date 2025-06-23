@@ -89,23 +89,36 @@ def home(request):
                 'success': True,
                 'redirect_url': ''
             })
-    featured_products = Product.objects.filter(is_active=True, tag='featured').order_by('-created_at').distinct()
-    on_sale_products = Product.objects.filter(is_active=True, tag='on_sale').order_by('-created_at').distinct()
+    featured_products = Product.objects.filter(
+        is_active=True, tag='featured').order_by('-created_at').distinct()
+    on_sale_products = Product.objects.filter(
+        is_active=True, tag='on_sale').order_by('-created_at').distinct()
     on_sale_banner_product = on_sale_products.first()
-    top_rated_products = Product.objects.filter(is_active=True, tag='top_rated').order_by('-created_at').distinct()
-    normal_products = Product.objects.filter(is_active=True, tag='normal').order_by('-created_at').distinct()
-    clearance_product = Product.objects.filter(is_active=True, tag='clearance').order_by('-created_at').first()
-    new_arrival_product = Product.objects.filter(is_active=True, tag='new_arrival').order_by('-created_at').first()
-    limited_product = Product.objects.filter(is_active=True, tag='limited').order_by('-created_at').first()
-    best_choice_product = Product.objects.filter(is_active=True, tag='best_choice').order_by('-created_at').first()
-    normal_products = Product.objects.filter(is_active=True, tag='normal').order_by('-created_at').distinct()
-    furniture_category = Category.objects.filter(name__iexact='Furniture').first()
-    furniture_products = Product.objects.filter(category=furniture_category, is_active=True).order_by('-created_at') if furniture_category else Product.objects.none()
+    top_rated_products = Product.objects.filter(
+        is_active=True, tag='top_rated').order_by('-created_at').distinct()
+    normal_products = Product.objects.filter(
+        is_active=True, tag='normal').order_by('-created_at').distinct()
+    clearance_product = Product.objects.filter(
+        is_active=True, tag='clearance').order_by('-created_at').first()
+    new_arrival_product = Product.objects.filter(
+        is_active=True, tag='new_arrival').order_by('-created_at').first()
+    limited_product = Product.objects.filter(
+        is_active=True, tag='limited').order_by('-created_at').first()
+    best_choice_product = Product.objects.filter(
+        is_active=True, tag='best_choice').order_by('-created_at').first()
+    normal_products = Product.objects.filter(
+        is_active=True, tag='normal').order_by('-created_at').distinct()
+    furniture_category = Category.objects.filter(
+        name__iexact='Furniture').first()
+    furniture_products = Product.objects.filter(category=furniture_category, is_active=True).order_by(
+        '-created_at') if furniture_category else Product.objects.none()
     decor_category = Category.objects.filter(name__iexact='Decor').first()
-    decor_products = Product.objects.filter(category=decor_category, is_active=True).order_by('-created_at') if decor_category else Product.objects.none()
-    lighting_category = Category.objects.filter(name__iexact='Lighting').first()
-    lighting_products = Product.objects.filter(category=lighting_category, is_active=True).order_by('-created_at') if lighting_category else Product.objects.none()
-
+    decor_products = Product.objects.filter(category=decor_category, is_active=True).order_by(
+        '-created_at') if decor_category else Product.objects.none()
+    lighting_category = Category.objects.filter(
+        name__iexact='Lighting').first()
+    lighting_products = Product.objects.filter(category=lighting_category, is_active=True).order_by(
+        '-created_at') if lighting_category else Product.objects.none()
 
     return render(request, 'store/home.html', {
         'featured_products': featured_products,
@@ -157,9 +170,10 @@ def shop(request):
         'products': products,
     })
 
+
 def shop_by_category(request, category_name):
     decoded_category_name = unquote(category_name)
-    
+
     categories = Category.objects.all()
     products = Product.objects.filter(category__name=decoded_category_name)
 
@@ -168,6 +182,7 @@ def shop_by_category(request, category_name):
         'products': products,
         'selected_category': decoded_category_name,
     })
+
 
 def about(request):
     return render(request, 'store/about.html')
@@ -182,12 +197,115 @@ def blog(request):
 
 
 def wishlist(request):
-    return render(request, 'store/wishlist.html')
+    user_id = request.session.get('user_id')
+    if not user_id:
+        messages.warning(request, "Please log in to view your wishlist.")
+        return redirect('login')
 
+    try:
+        user = Registration.objects.get(id=user_id)
+    except Registration.DoesNotExist:
+        messages.error(request, "Invalid user.")
+        return redirect('login')
+
+    wishlisted_products = Wishlist.objects.filter(user=user)
+    return render(request, 'store/wishlist.html', {'wishlist_items': wishlisted_products})
+
+
+def add_to_wishlist(request, product_id):
+    # Check if user is logged in
+    user_id = request.session.get('user_id')
+    if not user_id:
+        messages.warning(request, "Please log in to add to wishlist.")
+        return redirect('login')
+
+    user = Registration.objects.get(id=user_id)
+    product = get_object_or_404(Product, id=product_id)
+
+    wishlist_item, created = Wishlist.objects.get_or_create(
+        user=user, product=product)
+
+    if created:
+        messages.success(request, f"{product.name} added to wishlist!")
+    else:
+        messages.info(request, f"{product.name} is already in your wishlist.")
+
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+
+def remove_from_wishlist(request, product_id):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        messages.warning(request, "Please log in first.")
+        return redirect('login')
+
+    try:
+        user = Registration.objects.get(id=user_id)
+    except Registration.DoesNotExist:
+        messages.error(request, "Invalid user.")
+        return redirect('login')
+
+    product = get_object_or_404(Product, id=product_id)
+
+    # Remove the wishlist entry
+    Wishlist.objects.filter(user=user, product=product).delete()
+    messages.success(request, f"{product.name} removed from your wishlist.")
+    return redirect('wishlist')
 
 def cart(request):
-    return render(request, 'store/cart.html')
+    user_id = request.session.get('user_id')
+    if not user_id:
+        messages.warning(request, "Please log in to view your cart.")
+        return redirect('login')
 
+    user = get_object_or_404(Registration, id=user_id)
+    cart_items = Cart.objects.filter(user=user)
+
+    # Calculate subtotal (product.price * quantity)
+    subtotal = sum(item.product.price * item.quantity for item in cart_items)
+
+    return render(request, 'store/cart.html', {
+        'cart_items': cart_items,
+        'subtotal': subtotal,
+    })
+
+
+def add_to_cart(request, product_id):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        messages.warning(request, "Please log in to add to cart.")
+        return redirect('login')
+
+    user = get_object_or_404(Registration, id=user_id)
+    product = get_object_or_404(Product, id=product_id)
+
+    cart_item, created = Cart.objects.get_or_create(user=user, product=product)
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+        messages.info(request, f"{product.name} quantity updated in cart.")
+    else:
+        messages.success(request, f"{product.name} added to cart.")
+    
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+def update_cart_quantity(request, cart_id):
+    quantity = int(request.POST.get('quantity', 1))
+    cart_item = get_object_or_404(Cart, id=cart_id)
+
+    if quantity < 1:
+        cart_item.delete()
+    else:
+        cart_item.quantity = quantity
+        cart_item.save()
+
+    return redirect('cart')
+
+
+def remove_from_cart(request, cart_id):
+    cart_item = get_object_or_404(Cart, id=cart_id)
+    cart_item.delete()
+    return redirect('cart')
 
 def checkout(request):
     return render(request, 'store/checkout.html')
